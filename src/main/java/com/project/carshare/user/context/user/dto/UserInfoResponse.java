@@ -1,11 +1,13 @@
 package com.project.carshare.user.context.user.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.persistence.Lob;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.util.UUID;
 
 @Data
@@ -25,4 +27,19 @@ public class UserInfoResponse {
 
     @JsonProperty("email")
     private String email;
+
+    @JsonProperty("verified")
+    private boolean verified;
+
+    @JsonProperty("drivingLicense")
+    private byte[] drivingLicense;
+
+    @JsonProperty("pesel")
+    private String pesel;
+
+    @JsonProperty("dateOfBirth")
+    private LocalDate dateOfBirth;
+
+    @JsonProperty("phoneNo")
+    private String phoneNo;
 }

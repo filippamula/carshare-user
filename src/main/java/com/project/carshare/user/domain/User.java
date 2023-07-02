@@ -2,6 +2,7 @@ package com.project.carshare.user.domain;
 
 import com.project.carshare.user.domain.enums.Role;
 import com.project.carshare.user.domain.enums.Status;
+import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,6 +12,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.time.LocalDate;
 import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
@@ -33,6 +35,12 @@ public class User implements UserDetails {
     private Role role;
     @Enumerated(EnumType.STRING)
     private Status status;
+    private boolean verified;
+    @Lob
+    private byte[] drivingLicense;
+    private String pesel;
+    private LocalDate dateOfBirth;
+    private String phoneNo;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

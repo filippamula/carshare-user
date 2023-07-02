@@ -26,6 +26,11 @@ public class UserService {
                .firstName(user.getFirstName())
                .lastName(user.getLastName())
                .email(user.getEmail())
+               .verified(user.isVerified())
+               .drivingLicense(user.getDrivingLicense())
+               .pesel(user.getPesel())
+               .dateOfBirth(user.getDateOfBirth())
+               .phoneNo(user.getPhoneNo())
                .build();
     }
 

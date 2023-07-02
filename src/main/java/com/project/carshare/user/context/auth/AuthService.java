@@ -39,6 +39,11 @@ public class AuthService {
                 .password(passwordEncoder.encode(request.getPassword()))
                 .role(Role.USER)
                 .status(Status.ACTIVE)
+                .verified(false)
+                .drivingLicense(null)
+                .pesel(null)
+                .dateOfBirth(null)
+                .phoneNo(null)
                 .build();
 
         userRepository.save(user);
