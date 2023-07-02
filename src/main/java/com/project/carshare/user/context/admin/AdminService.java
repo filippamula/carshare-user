@@ -19,19 +19,21 @@ public class AdminService {
     public List<UserInfoResponse> userList() {
         return userRepository.findUsersByRole(Role.USER)
                 .orElseThrow(() -> new RuntimeException("No user found"))
-                .stream().map(it -> UserInfoResponse.builder()
+                .stream().filter(it -> !it.getStatus().equals(Status.ARCHIVED))
+                .map(it -> UserInfoResponse.builder()
                         .id(it.getId())
                         .email(it.getEmail())
                         .firstName(it.getFirstName())
                         .lastName(it.getLastName())
-                        .build()).toList();
+                        .build())
+                .toList();
     }
 
     public void deleteUser(UUID uuid) {
         var user = userRepository.findById(uuid)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
-        if (user.isArchived()){
+        if (user.isArchived()) {
             throw new RuntimeException("User not found");
         }
 
@@ -43,10 +45,10 @@ public class AdminService {
         var user = userRepository.findById(uuid)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
-        if (user.isArchived()){
+        if (user.isArchived()) {
             throw new RuntimeException("User not found");
         }
-        if (user.isLocked()){
+        if (user.isLocked()) {
             throw new RuntimeException("User already locked");
         }
 
@@ -58,10 +60,10 @@ public class AdminService {
         var user = userRepository.findById(uuid)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
-        if (user.isArchived()){
+        if (user.isArchived()) {
             throw new RuntimeException("User not found");
         }
-        if (!user.isLocked()){
+        if (!user.isLocked()) {
             throw new RuntimeException("User already active");
         }
 
