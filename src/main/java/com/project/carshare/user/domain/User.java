@@ -63,4 +63,12 @@ public class User implements UserDetails {
     public boolean isEnabled() {
         return true;
     }
+
+    public boolean isArchived() {
+        return status.equals(Status.ARCHIVED);
+    }
+
+    public boolean isLocked() {
+        return status.equals(Status.LOCKED);
+    }
 }

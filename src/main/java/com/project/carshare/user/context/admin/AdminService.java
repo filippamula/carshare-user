@@ -3,10 +3,12 @@ package com.project.carshare.user.context.admin;
 import com.project.carshare.user.context.user.dto.UserInfoResponse;
 import com.project.carshare.user.domain.UserRepository;
 import com.project.carshare.user.domain.enums.Role;
+import com.project.carshare.user.domain.enums.Status;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -23,5 +25,47 @@ public class AdminService {
                         .firstName(it.getFirstName())
                         .lastName(it.getLastName())
                         .build()).toList();
+    }
+
+    public void deleteUser(UUID uuid) {
+        var user = userRepository.findById(uuid)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        if (user.isArchived()){
+            throw new RuntimeException("User not found");
+        }
+
+        user.setStatus(Status.ARCHIVED);
+        userRepository.save(user);
+    }
+
+    public void lockUser(UUID uuid) {
+        var user = userRepository.findById(uuid)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        if (user.isArchived()){
+            throw new RuntimeException("User not found");
+        }
+        if (user.isLocked()){
+            throw new RuntimeException("User already locked");
+        }
+
+        user.setStatus(Status.LOCKED);
+        userRepository.save(user);
+    }
+
+    public void unlockUser(UUID uuid) {
+        var user = userRepository.findById(uuid)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        if (user.isArchived()){
+            throw new RuntimeException("User not found");
+        }
+        if (!user.isLocked()){
+            throw new RuntimeException("User already active");
+        }
+
+        user.setStatus(Status.ACTIVE);
+        userRepository.save(user);
     }
 }
