@@ -22,6 +22,7 @@ public class UserService {
                .orElseThrow(() -> new RuntimeException("User not found"));
 
        return UserInfoResponse.builder()
+               .id(user.getId())
                .firstName(user.getFirstName())
                .lastName(user.getLastName())
                .email(user.getEmail())
