@@ -1,4 +1,4 @@
-package com.project.carshare.user.context.login.dto;
+package com.project.carshare.user.context.auth.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;

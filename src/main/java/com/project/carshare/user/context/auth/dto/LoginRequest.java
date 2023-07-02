@@ -1,4 +1,4 @@
-package com.project.carshare.user.context.login.dto;
+package com.project.carshare.user.context.auth.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
