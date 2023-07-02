@@ -19,6 +19,11 @@ public class RegistrationService {
     private final PasswordEncoder passwordEncoder;
 
     public void register(RegisterRequest request) {
+
+        if(userRepository.findByEmail(request.getEmail()).isPresent()){
+            throw new RuntimeException("Email already taken");
+        }
+
         var user = User.builder()
                 .id(UUID.randomUUID())
                 .firstName(request.getFirstName())
