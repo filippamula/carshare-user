@@ -4,12 +4,10 @@ import com.project.carshare.user.context.user.dto.ChangePasswordRequest;
 import com.project.carshare.user.context.user.dto.UserInfoResponse;
 import com.project.carshare.user.context.user.dto.VerificationInfoRequest;
 import lombok.RequiredArgsConstructor;
-import org.aspectj.apache.bcel.classfile.Field;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
 import java.io.IOException;
 
 @RestController
@@ -44,7 +42,7 @@ public class UserEndpoint {
     }
 
     @PostMapping("/verification/send")
-    public ResponseEntity<Void> sendToVerification(){
+    public ResponseEntity<Void> sendToVerification() {
         userService.sendToVerification();
         return ResponseEntity.ok().build();
     }
