@@ -1,7 +1,8 @@
 package com.project.carshare.user.domain;
 
 import com.project.carshare.user.domain.enums.Role;
-import com.project.carshare.user.domain.enums.Status;
+import com.project.carshare.user.domain.enums.UserStatus;
+import com.project.carshare.user.domain.enums.VerificationStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -33,9 +34,9 @@ public class User implements UserDetails {
     @Enumerated(EnumType.STRING)
     private Role role;
     @Enumerated(EnumType.STRING)
-    private Status status;
-    private boolean verified;
-    @Lob
+    private UserStatus status;
+    @Enumerated(EnumType.STRING)
+    private VerificationStatus verificationStatus;
     private byte[] drivingLicense;
     private String pesel;
     private LocalDate dateOfBirth;
@@ -58,7 +59,7 @@ public class User implements UserDetails {
 
     @Override
     public boolean isAccountNonLocked() {
-        return status.equals(Status.ACTIVE);
+        return status.equals(UserStatus.ACTIVE);
     }
 
     @Override
@@ -72,10 +73,25 @@ public class User implements UserDetails {
     }
 
     public boolean isArchived() {
-        return status.equals(Status.ARCHIVED);
+        return status.equals(UserStatus.ARCHIVED);
     }
 
     public boolean isLocked() {
-        return status.equals(Status.LOCKED);
+        return status.equals(UserStatus.LOCKED);
+    }
+
+    public boolean isVerified() {
+        return verificationStatus.equals(VerificationStatus.VERIFIED);
+    }
+
+    public boolean isSentToVerification() {
+        return verificationStatus.equals(VerificationStatus.PENDING);
+    }
+
+    public boolean isReadyForVerification() {
+        if (pesel == null || phoneNo == null || dateOfBirth == null || drivingLicense == null) {
+            return false;
+        }
+        return true;
     }
 }

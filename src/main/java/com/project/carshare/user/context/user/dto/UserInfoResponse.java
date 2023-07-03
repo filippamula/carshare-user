@@ -1,6 +1,7 @@
 package com.project.carshare.user.context.user.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.project.carshare.user.domain.enums.VerificationStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -28,7 +29,7 @@ public class UserInfoResponse {
     private String email;
 
     @JsonProperty("verified")
-    private boolean verified;
+    private VerificationStatus verified;
 
     @JsonProperty("drivingLicense")
     private byte[] drivingLicense;

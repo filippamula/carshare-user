@@ -7,7 +7,8 @@ import com.project.carshare.user.context.auth.dto.RegisterRequest;
 import com.project.carshare.user.domain.User;
 import com.project.carshare.user.domain.UserRepository;
 import com.project.carshare.user.domain.enums.Role;
-import com.project.carshare.user.domain.enums.Status;
+import com.project.carshare.user.domain.enums.UserStatus;
+import com.project.carshare.user.domain.enums.VerificationStatus;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -38,8 +39,8 @@ public class AuthService {
                 .email(request.getEmail())
                 .password(passwordEncoder.encode(request.getPassword()))
                 .role(Role.USER)
-                .status(Status.ACTIVE)
-                .verified(false)
+                .status(UserStatus.ACTIVE)
+                .verificationStatus(VerificationStatus.NOT_VERIFIED)
                 .drivingLicense(null)
                 .pesel(null)
                 .dateOfBirth(null)

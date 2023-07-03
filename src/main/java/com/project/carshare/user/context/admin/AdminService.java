@@ -3,7 +3,7 @@ package com.project.carshare.user.context.admin;
 import com.project.carshare.user.context.user.dto.UserInfoResponse;
 import com.project.carshare.user.domain.UserRepository;
 import com.project.carshare.user.domain.enums.Role;
-import com.project.carshare.user.domain.enums.Status;
+import com.project.carshare.user.domain.enums.UserStatus;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -19,7 +19,7 @@ public class AdminService {
     public List<UserInfoResponse> userList() {
         return userRepository.findUsersByRole(Role.USER)
                 .orElseThrow(() -> new RuntimeException("No user found"))
-                .stream().filter(it -> !it.getStatus().equals(Status.ARCHIVED))
+                .stream().filter(it -> !it.getStatus().equals(UserStatus.ARCHIVED))
                 .map(it -> UserInfoResponse.builder()
                         .id(it.getId())
                         .email(it.getEmail())
@@ -37,7 +37,7 @@ public class AdminService {
             throw new RuntimeException("User not found");
         }
 
-        user.setStatus(Status.ARCHIVED);
+        user.setStatus(UserStatus.ARCHIVED);
         userRepository.save(user);
     }
 
@@ -52,7 +52,7 @@ public class AdminService {
             throw new RuntimeException("User already locked");
         }
 
-        user.setStatus(Status.LOCKED);
+        user.setStatus(UserStatus.LOCKED);
         userRepository.save(user);
     }
 
@@ -67,7 +67,7 @@ public class AdminService {
             throw new RuntimeException("User already active");
         }
 
-        user.setStatus(Status.ACTIVE);
+        user.setStatus(UserStatus.ACTIVE);
         userRepository.save(user);
     }
 }
