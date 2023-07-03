@@ -2,7 +2,6 @@ package com.project.carshare.user.domain;
 
 import com.project.carshare.user.domain.enums.Role;
 import com.project.carshare.user.domain.enums.Status;
-import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
