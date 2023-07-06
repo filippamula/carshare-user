@@ -29,4 +29,10 @@ public class AuthEndpoint {
     public ResponseEntity<AuthorizationResponse> login(@RequestBody LoginRequest loginRequest){
         return ResponseEntity.ok(authService.login(loginRequest));
     }
+
+    @PostMapping("/logout")
+    public ResponseEntity<Void> logout(){
+        authService.logout();
+        return ResponseEntity.ok().build();
+    }
 }

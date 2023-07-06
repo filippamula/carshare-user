@@ -1,11 +1,12 @@
 package com.project.carshare.user.configuration.security;
 
+import com.project.carshare.user.domain.User;
+import com.project.carshare.user.domain.UserRepository;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import java.security.Key;
@@ -18,8 +19,9 @@ import java.util.function.Function;
 public class JwtService {
 
     private static final String SECRET_KEY = "b2NjdXJjb29raWVzc3Rvb2Rwcm9iYWJseWNsb3RoZXNzdXBwZXJjYXJlZnVsbHljb3I=";
+    private UserRepository userRepository;
 
-    public String extractUsername(String token) {
+    public String extractUserId(String token) {
         return extractClaim(token, Claims::getSubject);
     }
 
@@ -28,24 +30,24 @@ public class JwtService {
         return claimsResolver.apply(claims);
     }
 
-    public String generateToken(UserDetails userDetails){
-        return generateToken(new HashMap<>(), userDetails);
+    public String generateToken(User user){
+        return generateToken(new HashMap<>(), user);
     }
 
-    public String generateToken(Map<String, Object> extraClaims, UserDetails userDetails){
+    public String generateToken(Map<String, Object> extraClaims, User user){
         return Jwts
                 .builder()
                 .setClaims(extraClaims)
-                .setSubject(userDetails.getUsername())
+                .setSubject(user.getId().toString())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 24))
                 .signWith(getSingnInKey(), SignatureAlgorithm.HS256)
                 .compact();
     }
 
-    public boolean isTokenValid(String token, UserDetails userDetails){
-        final String username = extractUsername(token);
-        return (username.equals(userDetails.getUsername())) && !isTokenExpired(token);
+    public boolean isTokenValid(String token, User user){
+        final String userId = extractUserId(token);
+        return userId.equals(user.getId().toString()) && !isTokenExpired(token) && token.equals(user.getLastToken());
     }
 
     private boolean isTokenExpired(String token){

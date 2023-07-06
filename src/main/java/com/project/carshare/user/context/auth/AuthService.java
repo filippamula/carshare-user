@@ -11,11 +11,9 @@ import com.project.carshare.user.domain.enums.UserStatus;
 import com.project.carshare.user.domain.enums.VerificationStatus;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
-import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -28,12 +26,11 @@ public class AuthService {
 
     public void register(RegisterRequest request) {
 
-        if(userRepository.findByEmail(request.getEmail()).isPresent()){
+        if (userRepository.findByEmail(request.getEmail()).isPresent()) {
             throw new RuntimeException("Email already taken");
         }
 
         var user = User.builder()
-                .id(UUID.randomUUID())
                 .firstName(request.getFirstName())
                 .lastName(request.getLastName())
                 .email(request.getEmail())
@@ -51,18 +48,33 @@ public class AuthService {
     }
 
     public AuthorizationResponse login(LoginRequest request) {
-        authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                        request.getEmail(),
-                        request.getPassword()
-                )
-        );
-
         var user = userRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new RuntimeException("User not found"));
+
+        if (user.isArchived()) {
+            throw new RuntimeException("User not found");
+        }
+        if (user.isLocked()) {
+            throw new RuntimeException("User is locked");
+        }
+        if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
+            throw new RuntimeException("Invalid credentials");
+        }
+
         var jwtToken = jwtService.generateToken(user);
+        user.setLastToken(jwtToken);
+        userRepository.save(user);
         return AuthorizationResponse.builder()
                 .accessToken(jwtToken)
                 .build();
+    }
+
+    public void logout() {
+        var email = SecurityContextHolder.getContext().getAuthentication().getName();
+        var user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        user.setLastToken(null);
+        userRepository.save(user);
     }
 }

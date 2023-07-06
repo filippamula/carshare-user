@@ -19,13 +19,14 @@ import java.util.UUID;
 
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "APP_USER")
+@Table(name = "APP_USERS")
 @Entity
 @Data
 @Builder
 public class User implements UserDetails {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
     private String firstName;
     private String lastName;
@@ -41,6 +42,7 @@ public class User implements UserDetails {
     private String pesel;
     private LocalDate dateOfBirth;
     private String phoneNo;
+    private String lastToken;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
