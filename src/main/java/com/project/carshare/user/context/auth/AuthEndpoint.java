@@ -5,10 +5,7 @@ import com.project.carshare.user.context.auth.dto.AuthorizationResponse;
 import com.project.carshare.user.context.auth.dto.LoginRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/v1/user/auth")
@@ -26,13 +23,18 @@ public class AuthEndpoint {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<AuthorizationResponse> login(@RequestBody LoginRequest loginRequest){
+    public ResponseEntity<AuthorizationResponse> login(@RequestBody LoginRequest loginRequest) {
         return ResponseEntity.ok(authService.login(loginRequest));
     }
 
     @PostMapping("/logout")
-    public ResponseEntity<Void> logout(){
+    public ResponseEntity<Void> logout() {
         authService.logout();
         return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/internal/verify")
+    public ResponseEntity<Void> validateToken() {
+            return ResponseEntity.ok().build();
     }
 }
