@@ -14,6 +14,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.Map;
 import java.util.UUID;
 
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
@@ -45,7 +46,8 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                     .orElseThrow(() -> new RuntimeException("User not found"));
             if (jwtService.isTokenValid(jwt, user)) {
                 UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
-                        user,
+                        Map.of("userId", userId,
+                                "role", jwtService.extractRole(jwt)),
                         null,
                         user.getAuthorities()
                 );

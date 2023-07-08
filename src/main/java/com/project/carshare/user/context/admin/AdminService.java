@@ -7,9 +7,11 @@ import com.project.carshare.user.domain.enums.Role;
 import com.project.carshare.user.domain.enums.UserStatus;
 import com.project.carshare.user.domain.enums.VerificationStatus;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 @Service
@@ -18,7 +20,18 @@ public class AdminService {
 
     private final UserRepository userRepository;
 
+
+    @SuppressWarnings("unchecked")
+    private boolean isAdmin(){
+        return ((Map<String,String>) SecurityContextHolder.getContext().getAuthentication().getPrincipal())
+                .get("role")
+                .equals(Role.ADMIN.name());
+    }
     public List<UserInfoResponse> userList() {
+        if(!isAdmin()){
+            throw new RuntimeException("You must be admin to do that");
+        }
+
         return userRepository.findUsersByRole(Role.USER)
                 .orElseThrow(() -> new RuntimeException("No user found"))
                 .stream().filter(it -> !it.getStatus().equals(UserStatus.ARCHIVED))
@@ -32,6 +45,10 @@ public class AdminService {
     }
 
     public void deleteUser(UUID uuid) {
+        if(!isAdmin()){
+            throw new RuntimeException("You must be admin to do that");
+        }
+
         var user = userRepository.findById(uuid)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
@@ -44,6 +61,10 @@ public class AdminService {
     }
 
     public void lockUser(UUID uuid) {
+        if(!isAdmin()){
+            throw new RuntimeException("You must be admin to do that");
+        }
+
         var user = userRepository.findById(uuid)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
@@ -59,6 +80,10 @@ public class AdminService {
     }
 
     public void unlockUser(UUID uuid) {
+        if(!isAdmin()){
+            throw new RuntimeException("You must be admin to do that");
+        }
+
         var user = userRepository.findById(uuid)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
@@ -74,6 +99,10 @@ public class AdminService {
     }
 
     public List<UserInfoResponse> userForVerificationList() {
+        if(!isAdmin()){
+            throw new RuntimeException("You must be admin to do that");
+        }
+
         return userRepository.findUsersByRole(Role.USER)
                 .orElseThrow(() -> new RuntimeException("No user found"))
                 .stream()
@@ -93,16 +122,20 @@ public class AdminService {
     }
 
     public void verifyUser(String userId, VerificationRequest request) {
+        if(!isAdmin()){
+            throw new RuntimeException("You must be admin to do that");
+        }
+
         var user = userRepository.findById(UUID.fromString(userId))
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
-        if(user.isVerified()){
+        if (user.isVerified()) {
             throw new RuntimeException("User already verified");
         }
-        if(request.isVerifiedSuccessfully()){
+        if (request.isVerifiedSuccessfully()) {
             user.setVerificationStatus(VerificationStatus.VERIFIED);
         }
-        if(!request.isVerifiedSuccessfully()){
+        if (!request.isVerifiedSuccessfully()) {
             user.setVerificationStatus(VerificationStatus.NEGATIVE_VERIFICATION);
         }
 

@@ -96,4 +96,8 @@ public class User implements UserDetails {
         }
         return true;
     }
+
+    public boolean isAdmin() {
+        return role.equals(Role.ADMIN);
+    }
 }
