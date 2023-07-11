@@ -27,7 +27,7 @@ public class AdminEndpoint {
     }
 
     @PostMapping("/user/{userId}/verify")
-    public ResponseEntity<Void> verifyUser(@PathVariable String userId,
+    public ResponseEntity<Void> verifyUser(@PathVariable UUID userId,
                                            @RequestBody VerificationRequest request) {
         adminService.verifyUser(userId, request);
         return ResponseEntity.ok().build();

@@ -74,6 +74,10 @@ public class User implements UserDetails {
         return true;
     }
 
+    public boolean isActive() {
+        return status.equals(UserStatus.ACTIVE);
+    }
+
     public boolean isArchived() {
         return status.equals(UserStatus.ARCHIVED);
     }
@@ -91,10 +95,7 @@ public class User implements UserDetails {
     }
 
     public boolean isReadyForVerification() {
-        if (pesel == null || phoneNo == null || dateOfBirth == null || drivingLicense == null) {
-            return false;
-        }
-        return true;
+        return pesel != null && phoneNo != null && dateOfBirth != null && drivingLicense != null;
     }
 
     public boolean isAdmin() {

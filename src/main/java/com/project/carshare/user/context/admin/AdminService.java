@@ -6,12 +6,11 @@ import com.project.carshare.user.domain.UserRepository;
 import com.project.carshare.user.domain.enums.Role;
 import com.project.carshare.user.domain.enums.UserStatus;
 import com.project.carshare.user.domain.enums.VerificationStatus;
+import com.project.carshare.user.infrastructurte.utility.UserUtility;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 @Service
@@ -19,16 +18,10 @@ import java.util.UUID;
 public class AdminService {
 
     private final UserRepository userRepository;
+    private final UserUtility userUtility;
 
-
-    @SuppressWarnings("unchecked")
-    private boolean isAdmin(){
-        return ((Map<String,String>) SecurityContextHolder.getContext().getAuthentication().getPrincipal())
-                .get("role")
-                .equals(Role.ADMIN.name());
-    }
     public List<UserInfoResponse> userList() {
-        if(!isAdmin()){
+        if (!userUtility.isAdmin()) {
             throw new RuntimeException("You must be admin to do that");
         }
 
@@ -45,7 +38,7 @@ public class AdminService {
     }
 
     public void deleteUser(UUID uuid) {
-        if(!isAdmin()){
+        if (!userUtility.isAdmin()) {
             throw new RuntimeException("You must be admin to do that");
         }
 
@@ -61,7 +54,7 @@ public class AdminService {
     }
 
     public void lockUser(UUID uuid) {
-        if(!isAdmin()){
+        if (!userUtility.isAdmin()) {
             throw new RuntimeException("You must be admin to do that");
         }
 
@@ -80,7 +73,7 @@ public class AdminService {
     }
 
     public void unlockUser(UUID uuid) {
-        if(!isAdmin()){
+        if (!userUtility.isAdmin()) {
             throw new RuntimeException("You must be admin to do that");
         }
 
@@ -90,7 +83,7 @@ public class AdminService {
         if (user.isArchived()) {
             throw new RuntimeException("User not found");
         }
-        if (!user.isLocked()) {
+        if (user.isActive()) {
             throw new RuntimeException("User already active");
         }
 
@@ -99,7 +92,7 @@ public class AdminService {
     }
 
     public List<UserInfoResponse> userForVerificationList() {
-        if(!isAdmin()){
+        if (!userUtility.isAdmin()) {
             throw new RuntimeException("You must be admin to do that");
         }
 
@@ -121,12 +114,12 @@ public class AdminService {
                 .toList();
     }
 
-    public void verifyUser(String userId, VerificationRequest request) {
-        if(!isAdmin()){
+    public void verifyUser(UUID userId, VerificationRequest request) {
+        if (!userUtility.isAdmin()) {
             throw new RuntimeException("You must be admin to do that");
         }
 
-        var user = userRepository.findById(UUID.fromString(userId))
+        var user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
         if (user.isVerified()) {
