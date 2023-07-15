@@ -10,6 +10,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.UUID;
+
 @Service
 @RequiredArgsConstructor
 public class UserService {
@@ -18,9 +20,9 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
 
     public UserInfoResponse info(){
-       var email =  SecurityContextHolder.getContext().getAuthentication().getName();
+       var userId =  SecurityContextHolder.getContext().getAuthentication().getName();
 
-       var user = userRepository.findByEmail(email)
+       var user = userRepository.findById(UUID.fromString(userId))
                .orElseThrow(() -> new RuntimeException("User not found"));
 
        return UserInfoResponse.builder()
