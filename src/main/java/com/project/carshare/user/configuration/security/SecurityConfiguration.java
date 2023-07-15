@@ -22,10 +22,11 @@ public class SecurityConfiguration {
                 .csrf()
                 .disable()
                 .authorizeHttpRequests()
-                .requestMatchers("/v1/user/auth/**",
-                        "/v1/user/auth/internal/**").permitAll()
+                .requestMatchers("auth/**").permitAll()
                 .anyRequest()
                 .authenticated()
+                .and()
+                .httpBasic()
                 .and()
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)

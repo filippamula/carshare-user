@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/v1/user/admin")
+@RequestMapping("admin")
 @RequiredArgsConstructor
 public class AdminEndpoint {
 
