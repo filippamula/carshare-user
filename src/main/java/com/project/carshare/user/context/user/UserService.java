@@ -39,9 +39,9 @@ public class UserService {
     }
 
     public void changePassword(ChangePasswordRequest request) {
-        var email = SecurityContextHolder.getContext().getAuthentication().getName();
+        var userId = SecurityContextHolder.getContext().getAuthentication().getName();
 
-        var user = userRepository.findByEmail(email)
+        var user = userRepository.findById(UUID.fromString(userId))
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
         if (!passwordEncoder.matches(request.getOldPassword(), user.getPassword())){
@@ -56,9 +56,9 @@ public class UserService {
     }
 
     public void addVerificationInfo(VerificationInfoRequest request) {
-        var email = SecurityContextHolder.getContext().getAuthentication().getName();
+        var userId = SecurityContextHolder.getContext().getAuthentication().getName();
 
-        var user = userRepository.findByEmail(email)
+        var user = userRepository.findById(UUID.fromString(userId))
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
         user.setPesel(request.getPesel());
@@ -69,9 +69,9 @@ public class UserService {
     }
 
     public void addDrivingLicense(byte[] bytes) {
-        var email = SecurityContextHolder.getContext().getAuthentication().getName();
+        var userId = SecurityContextHolder.getContext().getAuthentication().getName();
 
-        var user = userRepository.findByEmail(email)
+        var user = userRepository.findById(UUID.fromString(userId))
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
         user.setDrivingLicense(bytes);
@@ -80,9 +80,9 @@ public class UserService {
     }
 
     public void sendToVerification() {
-        var email = SecurityContextHolder.getContext().getAuthentication().getName();
+        var userId = SecurityContextHolder.getContext().getAuthentication().getName();
 
-        var user = userRepository.findByEmail(email)
+        var user = userRepository.findById(UUID.fromString(userId))
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
         if(!user.isReadyForVerification()){
