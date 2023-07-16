@@ -4,7 +4,7 @@ server:
     include-binding-errors: always
   port: 8018
   servlet:
-    context-path: /v1/api/user/
+    context-path: /v1/api/user
 
 spring:
   application:
@@ -21,6 +21,10 @@ spring:
         dialect: org.hibernate.dialect.PostgreSQLDialect
         format_sql: true
     show-sql: false
+
+springdoc:
+  api-docs:
+    path: /api-docs
 
 eureka:
   client:
